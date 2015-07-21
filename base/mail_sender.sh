@@ -8,22 +8,12 @@
 # 4 - путь кприкрепленному файлу
 
 ##################### ARGS #####################
-HOSTNAME=`hostname`
-SEND_TYPE=$MAIL_WAY
-SEND_DATE=`date '+%Y-%m-%d %H:%M:%S'`
-
-
+source ./mail_sender.conf || echo "CONFIG NOT FOUND !" || exit 1
 
 MES_SUBJECT=$1
 MES_TEXT=$2
 MAIL_TO=''
 ATTACHED_FILE=$4
-
-#Флаг для включения функции логирования DEBUG_FLAG
-# 0 - штатная работа. INFO информация не отображается
-# 1 - отображение INFO сообщений в консоле
-# 2 - set -x
-DEBUG_FLAG=2
 
 #Код завершения скрипта
 EXIT_CODE=0
