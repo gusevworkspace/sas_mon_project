@@ -8,11 +8,11 @@
 # 4 - путь кприкрепленному файлу
 
 ##################### ARGS #####################
-source ./mail_sender.conf || echo "CONFIG NOT FOUND !" || exit 1
+source ./mail_sender.conf
 
 MES_SUBJECT=$1
 MES_TEXT=$2
-MAIL_TO=''
+MAIL_TO=$3
 ATTACHED_FILE=$4
 
 #Код завершения скрипта
