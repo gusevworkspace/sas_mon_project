@@ -2,17 +2,12 @@
 # скрипт проверки работоспособности LSF
 
 ##################### ARGS #####################
-source /sas/sas/env/scripts/monitoring/mon_project/base/monitoring_cfg.conf
-SEND_TO='dmitry.gusev@glowbyteconsulting.com'
+#Подтягивание конфигов
+source $(dirname $0)/lsf_monitor.conf
+
 
 # Время запуска скрипта
 CUR_DATE=`date '+%Y-%m-%d_%H:%M:%S'`
-
-#Флаг для включения функции логирования DEBUG_FLAG
-# 0 - штатная работа. INFO информация не отображается
-# 1 - отображение INFO сообщений в консоле
-# 2 - set -x
-DEBUG_FLAG=1
 
 # Код завершения
 EXIT_CODE=0
@@ -52,14 +47,14 @@ if [ $DEBUG_FLAG -eq 2 ] ; then  set -x ; fi
 debug_mess INFO "starting lsf_check"
 
 #В случае, если файл обновлялся не позже, чем 15 минут назад, то в переменную положится имя файла
-IS_OK=`find /sas/temp/work/monitoring/lsf_monitor.txt -mmin -15`
+IS_OK=`find $PATH_TO_LSF_SIG_FILE -mmin -$TIMEOUT`
 debug_mess DEBUG  "IS_OK has $IS_OK"
 
 #Если переменная пуста - отработает if
 if [ -z $IS_OK ]
 then
      debug_mess ERROR  "LSF ERROR. Sending message to $SEND_TO"
-     bash $MONPRJPATH/base/mail_sender.sh "[DEV] BOM MA ADMIN SAS SCHEDULING IS DOWN" "Campaign was not executing." "$SEND_TO"
+     bash $MONPRJPATH/base/mail_sender.sh "$MESS_SUBJECT" "Campaign was not executing." "SEND_TO_OWNER"
 	 EXIT_CODE=1
 	 error_exit
 fi
