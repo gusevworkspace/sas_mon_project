@@ -210,13 +210,25 @@ start_sasservers()
 #Полный Стоп 
 stop_full() 
 {
-	if [ $SASVERSION = '9.3' ]; then stop_sasservers; fi
 	debug_mess INFO "Stopping SAS..."
-	stop_comp
-	sleep 2
-	stop_meta
-	sleep 2
-	stop_metadata_server
+	case $SASVERSION in
+		9.3)
+			stop_sasservers
+			sleep 2
+			stop_meta
+			sleep 2
+			stop_comp;;
+		9.4)
+			stop_meta
+			sleep 2
+			stop_comp
+			sleep 2
+			stop_metadata_server;;
+		*)
+			debug_mess ERROR "Unknown version. Check cjonfig"
+			error_exit 1;;
+	esac
+
 	debug_mess INFO "SAS stopped"
 }
 
