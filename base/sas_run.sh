@@ -9,18 +9,11 @@
 
 ##################### ARGS #####################
 SCRIPT=$1
-RUN_DATE=`date '+%Y-%m-%d_%H:%M:%S'`
-LOG_FILE=$TEMPPATH/"$RUN_DATE"_$SCRIPT.log
+
+#Подгрузка конфига
+source $(dirname $0)/log_maker.conf
 
 EXIT_CODE=0
-
-
-#Флаг для включения функции логирования DEBUG_FLAG
-# 0 - штатная работа. INFO информация не отображается
-# 1 - отображение INFO сообщений в консоле
-# 2 - set -x
-DEBUG_FLAG=1
-
 ################### END ARGS ###################
 
 
@@ -50,7 +43,7 @@ error_exit()
 
 run_SAS()
 {
-	$SASBINPATH/sas -noterminal -nosyntaxcheck -autoexec $AUTOEXECPATH/ma_autoexec.sas -sysin $MONPRJPATH/base/$SCRIPT.sas -nolog -noprint -altlog $LOG_FILE
+	$SASBINPATH/sas -noterminal -nosyntaxcheck -autoexec $AUTOEXECPATH/ma_autoexec.sas -sysin $SCRIPT -nolog -noprint -altlog $LOG_FILE
 	SAS_EXIT_CODE=$?
 	case $SAS_EXIT_CODE in
 		0)
