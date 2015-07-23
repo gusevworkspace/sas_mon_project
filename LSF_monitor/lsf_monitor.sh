@@ -4,7 +4,10 @@
 ##################### ARGS #####################
 #Подтягивание конфигов
 source $(dirname $0)/lsf_monitor.conf
-
+if [ $0 -ne 0 ]; then
+	echo lsf_monitor.conf not found!
+	exit 1
+fi
 
 # Время запуска скрипта
 CUR_DATE=`date '+%Y-%m-%d_%H:%M:%S'`
@@ -33,8 +36,8 @@ debug_mess()
 error_exit()
 {
 	if [ $DEBUG_FLAG -eq 2 ] ; then  set +x ; fi
-	debug_mess INFO "EXIT CODE is $EXIT_CODE"
-	debug_mess INFO "EXITING."
+		debug_mess INFO "EXIT CODE is $EXIT_CODE"
+		debug_mess INFO "EXITING."
 	exit $EXIT_CODE
 }
 
@@ -47,16 +50,15 @@ if [ $DEBUG_FLAG -eq 2 ] ; then  set -x ; fi
 debug_mess INFO "starting lsf_check"
 
 #В случае, если файл обновлялся не позже, чем 15 минут назад, то в переменную положится имя файла
-IS_OK=`find $PATH_TO_LSF_SIG_FILE -mmin -$TIMEOUT`
-debug_mess DEBUG  "IS_OK has $IS_OK"
+if [ -e $PATH_TO_LSF_SIG_FILE ] ; then
+	find $PATH_TO_LSF_SIG_FILE -mmin -$TIMEOUT
 
-#Если переменная пуста - отработает if
-if [ -z $IS_OK ]
-then
-     debug_mess ERROR  "LSF ERROR. Sending message to $SEND_TO"
-     bash $MONPRJPATH/base/mail_sender.sh "$MESS_SUBJECT" "Campaign was not executing." "SEND_TO_OWNER"
-	 EXIT_CODE=1
-	 error_exit
+	if [ $? -ne 0 ] ; then  #Если find отработал неудачно
+     	debug_mess ERROR  "LSF ERROR. Sending message to $SEND_TO"
+     	bash $MONPRJPATH/base/mail_sender.sh "$MESS_SUBJECT" "Campaign was not executing." "SEND_TO_OWNER"
+	 	EXIT_CODE=1
+	 	error_exit
+	fi	
 fi
 #Завершение программы
 error_exit
