@@ -11,14 +11,10 @@
 # 5 - Текст сообщения. В зависимости от флага файла, это либо строчка, либо путь к готовому тексту
 #
 #
-#
-#
-#Местонахождение журнала
+
 
 ##################### ARGS #####################
-LOGS_PATH=$LOGSPATH
-JOURNAL_FILE=$LOGSPATH/mon_scripts_journal.log
-EXIT_CODE=0
+source $(dirname $0)/log_maker.conf
 
 FILE_FLAG=$1
 MES_STATUS=$2
@@ -35,6 +31,7 @@ STATUS='UNKNOWN'
 # 2 - set -x
 DEBUG_FLAG=0
 
+EXIT_CODE=0
 ################### END ARGS ###################
 
 
@@ -58,13 +55,21 @@ error_exit()
 get_status()
 {
 	
-    if [ -e $LOGS_PATH/$FILE_NAME ]
-    then
+    if [ -e $LOGS_PATH/$FILE_NAME ] ; then
         debug_mess "logfile exists"
         STATUS='MODYFIED'
     else
-        touch  $LOGS_PATH/$FILE_NAME
-        STATUS='CREATED'
+        touch  $LOGS_PATH/$FILE_NAME 
+        
+        if [ $? -eq 0 ] ; then #Проверка на то, что файлик создался
+        	STATUS='CREATED'
+        else
+        	debug_mess "Failed to touch file"
+        	EXIT_CODE=102
+        	error_exit
+        fi
+        
+        
     fi
     debug_mess "status is $STATUS"
 }
@@ -100,13 +105,12 @@ add_list_to_log_file()
 ##################### MAIN #####################
 
 if [ $DEBUG_FLAG -eq 2 ] ; then  set -x ; fi
+
 get_status
 
-if [ $FILE_FLAG -eq 0 ]
-then
+if [ $FILE_FLAG -eq 0 ] ; then
     add_string_to_log_file "$LOG_TEXT"
-elif [ $FILE_FLAG -eq 1 ]
-then
+elif [ $FILE_FLAG -eq 1 ] && [ -e $FILE_FLAG ] ; then
     add_list_to_log_file
 else
     debug_mess "UNKNOWN FLAG !"
@@ -114,6 +118,7 @@ else
     EXIT_CODE=101
 	error_exit
 fi
+
 add_to_journal
 
 if [ $DEBUG_FLAG -eq 2 ] ; then  set +x ; fi

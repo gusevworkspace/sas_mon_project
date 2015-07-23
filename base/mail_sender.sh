@@ -8,7 +8,7 @@
 # 4 - путь кприкрепленному файлу
 
 ##################### ARGS #####################
-source ./mail_sender.conf
+source $(dirname $0)/mail_sender.conf
 
 MES_SUBJECT=$1
 MES_TEXT=$2
@@ -96,7 +96,7 @@ send_via_mailx()
 		echo "$MES_TEXT" | /bin/mailx sas@$HOSTNAME -s "$MES_SUBJECT" "$MAIL_TO"
 	fi
 	
-	if [ $? -eq 0]
+	if [ $? -eq 0 ]
 	then
 		debug_mess INFO "MAILED SUCCESSFUL"
 		debug_mess INFO "mail with subject ($MES_SUBJECT) was sent to ($MAIL_TO)"

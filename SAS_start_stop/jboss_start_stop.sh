@@ -58,7 +58,7 @@ prepare_id_mass()
 	start)
 		AGR='';;
 	*)
-		debug_mess ERROR "Error with status_jb_num - bad argument"; 
+		debug_mess ERROR "Error with status_jb_num - bad argument" 
 		error_exit 141;;
 	esac
 	SORT_ID="`echo $JBOSSERVERS | xargs -n1 | sort -g$ARG | xargs`"
