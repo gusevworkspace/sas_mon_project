@@ -8,7 +8,7 @@
 # 4 - путь кприкрепленному файлу
 
 ##################### ARGS #####################
-source $(dirname $0)/mail_sender.conf
+source $(basename $0)/mail_sender.conf	
 
 MES_SUBJECT=$1
 MES_TEXT=$2
@@ -118,7 +118,7 @@ send_via_sas()
 	export smparam3="$MAIL_TO"
 	if [ $ATTACHED_FILE ]; then export smparam4="$ATTACHED_FILE"; fi # добавить путь к файлу если имеется
 	debug_mess INFO "Sending mail via SAS"
-	$MONPRJPATH/base/sas_run.sh send_mail_sas
+	$MONPRJPATH/base/sas_run.sh send_mail_sas.sas
 }
 
 type_chooser()
