@@ -77,12 +77,10 @@ if [ $DEBUG_FLAG -eq 2 ] ; then  set -x ; fi
 ARG_1=`basename $1`
 ARG_2=$2
 
-case $ARG_1 in
-    SASServer1.sh | SASServer2.sh | SASServer6.sh | SASServer11.sh | sas.servers)
-        case $ARG_2 in
-            start | stop | restart | test)
+if grep -q $ARG_1 <<<$LIST_PROGS; then
+	if grep -q $ARG_2 <<<$LIST_COMMANDS; then
             	debug_mess "Trying to execute $ARG_1 $ARG_2"
-                hostValidator;;
-        esac;;
-esac
+                hostValidator
+    fi
+fi
 exit $EXIT_CODE
