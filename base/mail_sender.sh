@@ -118,7 +118,7 @@ send_via_sas()
 	export smparam3="$MAIL_TO"
 	if [ $ATTACHED_FILE ]; then export smparam4="$ATTACHED_FILE"; fi # добавить путь к файлу если имеется
 	debug_mess INFO "Sending mail via SAS"
-	$MONPRJPATH/base/sas_run.sh send_mail_sas.sas
+	$MONPRJPATH/base/sas_run.sh send_mail_sas
 }
 
 type_chooser()

@@ -43,7 +43,7 @@ error_exit()
 
 run_SAS()
 {
-	$SASBINPATH/sas -noterminal -nosyntaxcheck -autoexec $AUTOEXECPATH/ma_autoexec.sas -sysin $SCRIPT -nolog -noprint -altlog $LOG_FILE
+	$SASBINPATH/sas -noterminal -nosyntaxcheck -autoexec $AUTOEXECPATH/ma_autoexec.sas -sysin $SCRIPT.sas -nolog -noprint -altlog $LOG_FILE
 	SAS_EXIT_CODE=$?
 	case $SAS_EXIT_CODE in
 		0)
