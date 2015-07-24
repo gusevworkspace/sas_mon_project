@@ -25,7 +25,7 @@ debug_mess()
 	MES=$2
 	
 	#Если логирование подключено, то запишутся логи
-	test $MONPRJPATH &>/dev/null && $MONPRJPATH/base/log_maker.sh 0 $LOG_LEVEL lsf_monitor.sh $CUR_DATE "$MES" 
+	test $MONPRJPATH && $MONPRJPATH/base/log_maker.sh 0 $LOG_LEVEL lsf_monitor.sh $CUR_DATE "$MES" 
 	
     if [ $DEBUG_FLAG -eq 1 ]
     then
@@ -52,7 +52,7 @@ debug_mess INFO "starting lsf_check"
 
 #В случае, если файл обновлялся не позже, чем 15 минут назад, то в переменную положится имя файла
 if [ -e $PATH_TO_LSF_SIG_FILE ] ; then
-	find $PATH_TO_LSF_SIG_FILE -mmin -$TIMEOUT
+	find $PATH_TO_LSF_SIG_FILE -mmin -$TIMEOUT &>/dev/null 
 
 	if [ $? -ne 0 ] ; then  #Если find отработал неудачно
      	debug_mess ERROR  "LSF ERROR. Sending message to $SEND_TO"
