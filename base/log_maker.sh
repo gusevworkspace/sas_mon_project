@@ -14,6 +14,7 @@
 
 
 ##################### ARGS #####################
+#Подтягивание конфигов
 source $(dirname $0)/log_maker.conf
 
 FILE_FLAG=$1
@@ -21,16 +22,11 @@ MES_STATUS=$2
 SCRIPT_NAME=$3
 FILE_DATE=$4
 LOG_TEXT=$5
-FILE_NAME=${FILE_DATE}_$SCRIPT_NAME.log
+FILE_NAME=${FILE_DATE}_$(basename $SCRIPT_NAME).log
+
+#Инициализация переменных
 FILE_PATH=''
 STATUS='UNKNOWN'
-
-#Флаг для включения функции логирования
-# 0 - штатная работа. DEBUG информация не отображается
-# 1 - отображение DEBUG сообщений в консоле
-# 2 - set -x
-DEBUG_FLAG=0
-
 EXIT_CODE=0
 ################### END ARGS ###################
 
