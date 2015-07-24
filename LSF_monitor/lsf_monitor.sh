@@ -24,7 +24,8 @@ debug_mess()
 	LOG_LEVEL=$1
 	MES=$2
 	
-	$MONPRJPATH/base/log_maker.sh 0 $LOG_LEVEL lsf_monitor.sh $CUR_DATE "$MES" 
+	#Если логирование подключено, то запишутся логи
+	test $MONPRJPATH && $MONPRJPATH/base/log_maker.sh 0 $LOG_LEVEL lsf_monitor.sh $CUR_DATE "$MES" 
 	
     if [ $DEBUG_FLAG -eq 1 ]
     then
