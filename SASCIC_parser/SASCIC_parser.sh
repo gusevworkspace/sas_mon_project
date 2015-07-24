@@ -14,27 +14,14 @@
 #
 
 ##################### ARGS #####################
-source /sas/sas/env/scripts/monitoring/mon_project/base/monitoring_cfg.conf
+source $(dirname $0)/SASCIC_parser.conf
 
-PATH_TO_LOG=/sas/logs/sasserver6_logs/SASCustIntelCore6.3.log
-PATH_TO_COUNT=$MONPRJPATH/SASCIC_parser/temp/SASCustIntelCore_counter.count
-TEMP_FILE_NAME=SASCustIntelCore_parsed_log.tmp
-PATH_TO_TEMP=$MONPRJPATH/SASCIC_parser/temp/$TEMP_FILE_NAME
-MAIL_LIST=$MONPRJPATH/SASCIC_parser/mail_list.txt
 STR_COUNT_OLD=0
 SRT_COUNT_NEW=$STR_COUNT_OLD
 MODULE=0
 CUR_DATE=`date '+%Y-%m-%d_%H:%M:%S'`
 
 EXIT_CODE=0
-
-
-#Флаг для включения функции логирования DEBUG_FLAG
-# 0 - штатная работа. INFO информация не отображается
-# 1 - отображение INFO сообщений в консоле
-# 2 - set -x
-DEBUG_FLAG=1
-
 ################### END ARGS ###################
 
 
@@ -45,7 +32,7 @@ debug_mess()
 	LOG_LEVEL=$1
 	MES=$2
 	
-	$MONPRJPATH/base/log_maker.sh 0 $LOG_LEVEL SASCIC_parser.sh $CUR_DATE "$MES" 
+	$MONPRJPATH/base/log_maker.sh 0 $LOG_LEVEL SASCIC_parser.sh $CUR_DATE "$MES"
 	
     if [ $DEBUG_FLAG -eq 1 ]
     then
@@ -73,6 +60,7 @@ lock_log_file()
 {
 	debug_mess INFO "Locking log file localy"
 	ssh sas@$METASERVER "cp $PATH_TO_LOG /tmp/$TEMP_FILE_NAME"
+	if [ $? -ne 0 ] ; then EXIT_CODE=110; debug_mess ERROR "Error executing SSH. ERROR $EXIT_CODE"; error_exit; fi
 }
 
 #3 - узнать количество строк в логе (str_count_new)
@@ -80,7 +68,10 @@ define_new_count()
 {
 	debug_mess INFO "Defining new count"
 	SRT_COUNT_NEW=`ssh sas@$METASERVER "wc -l /tmp/$TEMP_FILE_NAME" | awk '{print $1}'`
+	if [ $? -ne 0 ] ; then EXIT_CODE=110; debug_mess ERROR "Error executing SSH. ERROR $EXIT_CODE"; error_exit; fi
+	
 	debug_mess DEBUG "SRT_COUNT_NEW = $SRT_COUNT_NEW"
+	
 	if [ $STR_COUNT_OLD -gt $SRT_COUNT_NEW ]
 	then 
 		debug_mess INFO "It is seems like log file is smaller then previously. Resetting counters."
@@ -94,7 +85,6 @@ get_new_strings()
 	debug_mess INFO "Getting new strings"
 	ssh sas@$METASERVER "tail -n +$STR_COUNT_OLD  /tmp/$TEMP_FILE_NAME" | grep ERROR > $PATH_TO_TEMP
 }
-
 
 
 #5 - обновить str_count_new (str_count_old=str_count_new)
@@ -168,7 +158,7 @@ if [ $? -ne 0 ] ; then 	EXIT_CODE=101 ; debug_mess ERROR "Can't define old count
 
 #2 - Лочим файл. Для этого копируем его локально
 lock_log_file
-if [ $? -ne 0 ] ; then EXIT_CODE=102; debug_mess ERROR "Can't define new count. ERROR $EXIT_CODE"; error_exit; fi
+if [ $? -ne 0 ] ; then EXIT_CODE=102; debug_mess ERROR "Can't lock file. ERROR $EXIT_CODE"; error_exit; fi
 
 
 #3 - узнать количество строк в логе (str_count_new)
