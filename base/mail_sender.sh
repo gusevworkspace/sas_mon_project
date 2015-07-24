@@ -8,7 +8,7 @@
 # 4 - путь кприкрепленному файлу
 
 ##################### ARGS #####################
-source $(basename $0)/mail_sender.conf	
+source $(dirname $0)/mail_sender.conf	
 
 MES_SUBJECT=$1
 MES_TEXT=$2

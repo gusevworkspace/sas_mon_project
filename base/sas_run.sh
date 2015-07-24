@@ -11,7 +11,7 @@
 SCRIPT=$1
 
 #Подгрузка конфига
-source $(dirname $0)/log_maker.conf
+source $(dirname $0)/sas_run.conf
 
 EXIT_CODE=0
 ################### END ARGS ###################
