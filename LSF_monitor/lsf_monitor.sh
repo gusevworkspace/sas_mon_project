@@ -4,7 +4,7 @@
 ##################### ARGS #####################
 #Подтягивание конфигов
 source $(dirname $0)/lsf_monitor.conf
-if [ $0 -ne 0 ]; then
+if [ $? -ne 0 ]; then
 	echo lsf_monitor.conf not found!
 	exit 1
 fi
